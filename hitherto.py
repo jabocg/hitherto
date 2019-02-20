@@ -61,7 +61,7 @@ async def on_message(message):
     if client.user.mentioned_in(message):
         if 'status' in message.content:
             await client.send_message(message.channel, "I'm Here!")
-        elif 'hello' in message.content:
+        elif 'hi' in message.content or 'hello' in message.content:
             await client.send_message(message.channel,
                                       random.choice(GREETING_STRINGS))
         elif 'kick' in message.content:
@@ -70,6 +70,9 @@ async def on_message(message):
             await report_days(message, category='ban')
         else:
             await report_days(message)
+    elif message.content.startswith('+k'):
+        # we just kicked someone, reset value
+        await reset_days(message.server, ban=False)
 
 
 async def reset_days(server, ban=False):

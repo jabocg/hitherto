@@ -53,7 +53,7 @@ async def on_message(message):
         elif 'ban' in message.content:
             await report_days(message, category='ban')
         else:
-            await report_days(message.server.id)
+            await report_days(message)
 
 
 async def report_days(message, category=None):

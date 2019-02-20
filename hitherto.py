@@ -27,7 +27,19 @@ cfg_parser.read(args.identity_file)
 # create client
 client = discord.Client()
 
+
 # client shenanigans
+@client.event
+def on_member_ban(member):
+    """Reset the "days since ban" value for the server."""
+
+
+@client.event
+def on_message(message):
+    """Either check for kick or respond to a ping."""
+    if client.mendioned_in(message):
+        client.send_message(message.channel, "I'm Here!")
+
 
 # start client
 print('starting client...')

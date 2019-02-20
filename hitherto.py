@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from configparser import ConfigParser
-from contestlib import contextmanager
+from contextlib import contextmanager
 import discord
 import sqlite3
 
@@ -31,4 +31,5 @@ client = discord.Discord()
 # client shenanigans
 
 # start client
+print('starting client...')
 client.start(cfg_parser.get('DISCORD', "TOKEN"))

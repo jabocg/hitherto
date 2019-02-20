@@ -37,8 +37,8 @@ async def on_member_ban(member):
 @client.event
 async def on_message(message):
     """Either check for kick or respond to a ping."""
-    if client.mendioned_in(message):
-        client.send_message(message.channel, "I'm Here!")
+    if client.user.mentioned_in(message):
+        await client.send_message(message.channel, "I'm Here!")
 
 
 # start client

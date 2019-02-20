@@ -25,10 +25,10 @@ cfg_parser = ConfigParser()
 cfg_parser.read(args.identity_file)
 
 # create client
-client = discord.Discord()
+client = discord.Client()
 
 # client shenanigans
 
 # start client
 print('starting client...')
-client.start(cfg_parser.get('DISCORD', "TOKEN"))
+client.run(cfg_parser.get('DISCORD', "TOKEN"))

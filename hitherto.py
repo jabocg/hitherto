@@ -26,6 +26,10 @@ GET_DAYS = ("SELECT `days` "
             "FROM `days_since` "
             "WHERE `server_id` = ? "
             "AND `category` = ?")
+SET_DAYS = ("UPDATE `days_since` "
+            "SET `days` = ? "
+            "WHERE `server_id` = ? "
+            "AND `category` = ?")
 
 
 # parse arguments and config
@@ -77,25 +81,24 @@ async def on_message(message):
             await report_days(server, channel)
     elif message.content.startswith('+k'):
         # we just kicked someone, reset value
-        await reset_days(message.server, ban=False)
+        await reset_days(message.server, category='kick')
+        await report_days(server, channel, category='kick')
 
 
-async def reset_days(server, ban=False):
+async def reset_days(server, category='kick'):
     """Reset the days since kick/ban."""
-    if ban:
-        pass
-    else:
-        pass
+    with get_db() as db:
+        db.execute(SET_DAYS, (0, server.id, 0 if category == 'kick' else 1,))
 
 
-async def report_days(server, channel, category=None):
+async def report_days(server, channel, category='all'):
     if category == 'kick':
         with get_db() as db:
             days = db.execute(GET_DAYS, (server.id, 0)).fetchone()[0]
     elif category == 'ban':
         with get_db() as db:
             days = db.execute(GET_DAYS, (server.id, 1)).fetchone()[0]
-    else:
+    elif category == 'all':
         category = 'kick/ban'
         with get_db() as db:
             kick_days = db.execute(GET_DAYS, (server.id, 0)).fetchone()[0]

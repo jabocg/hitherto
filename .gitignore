@@ -1,0 +1,4 @@
+env/
+*.cfg
+!example.cfg
+*.db

@@ -20,10 +20,9 @@ arg_parser.add_argument('-i', '--identity-file', help='identity file',
                         default='id.cfg')
 arg_parser.add_argument('-d', '--database', help='database file',
                         default='hitherto.db')
-cfg_parser = ConfigParser()
-cfg_parser.read(arg_parser.identity_file)
-
 args = arg_parser.parse_args()
+cfg_parser = ConfigParser()
+cfg_parser.read(args.identity_file)
 
 # create client
 client = discord.Discord()

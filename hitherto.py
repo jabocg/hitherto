@@ -22,6 +22,10 @@ ADD_SERVER = ("INSERT INTO `servers` "
 ADD_DAYS = ("INSERT INTO `days_since` "
             "(`server_id`, `category`, `days`) "
             "VALUES (?, ?, 0)")
+GET_DAYS = ("SELECT `days` "
+            "FROM `days_since` "
+            "WHERE `server_id` = ? "
+            "AND `category` = ?")
 
 
 # parse arguments and config
@@ -58,18 +62,19 @@ async def on_member_ban(member):
 @client.event
 async def on_message(message):
     """Either check for kick or respond to a ping."""
+    channel = message.channel
+    server = channel.server
     if client.user.mentioned_in(message):
         if 'status' in message.content:
-            await client.send_message(message.channel, "I'm Here!")
+            await client.send_message(channel, "I'm Here!")
         elif 'hi' in message.content or 'hello' in message.content:
-            await client.send_message(message.channel,
-                                      random.choice(GREETING_STRINGS))
+            await client.send_message(channel, random.choice(GREETING_STRINGS))
         elif 'kick' in message.content:
-            await report_days(message, category='kick')
+            await report_days(server, channel, category='kick')
         elif 'ban' in message.content:
-            await report_days(message, category='ban')
+            await report_days(server, channel, category='ban')
         else:
-            await report_days(message)
+            await report_days(server, channel)
     elif message.content.startswith('+k'):
         # we just kicked someone, reset value
         await reset_days(message.server, ban=False)
@@ -85,12 +90,17 @@ async def reset_days(server, ban=False):
 
 async def report_days(server, channel, category=None):
     if category == 'kick':
-        days = 0
+        with get_db() as db:
+            days = db.execute(GET_DAYS, (server.id, 0)).fetchone()[0]
     elif category == 'ban':
-        days = 1
+        with get_db() as db:
+            days = db.execute(GET_DAYS, (server.id, 1)).fetchone()[0]
     else:
         category = 'kick/ban'
-        days = 2
+        with get_db() as db:
+            kick_days = db.execute(GET_DAYS, (server.id, 0)).fetchone()[0]
+            ban_days = db.execute(GET_DAYS, (server.id, 1)).fetchone()[0]
+        days = min(kick_days, ban_days)
 
     msg = ('It has been {days} day(s) since the last {category}.'
            .format(days=days, category=category))

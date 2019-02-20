@@ -12,4 +12,5 @@ Add to your server!
 `Click me!`_
 
 
-.. _Click me!: https://discordapp.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website
+.. _Click me!: https://discordapp.com/api/oauth2/authorize?client_id=547651985055154188&scope=bot&permissions=3072
+

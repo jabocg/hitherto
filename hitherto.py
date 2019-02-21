@@ -1,9 +1,12 @@
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from contextlib import contextmanager
+import datetime
 import discord
 import random
 import sqlite3
+import threading
+import time
 
 
 GREETING_STRINGS = ["Hi!", "Hello!", "Hey!", "Wassup?",
@@ -128,6 +131,19 @@ def add_to_db(server):
         db.executemany(ADD_DAYS, ((server.id, 0,), (server.id, 1,),))
 
 
+def increment_days():
+    while True:
+        now = datetime.datetime.utcnow()
+        if now.hour == 0:
+            with get_db() as db:
+                for s in client.servers:
+                    kick_days = db.execute(GET_DAYS, (s.id, 0,)).fetchone()[0]
+                    ban_days = db.execute(GET_DAYS, (s.id, 1,)).fetchone()[0]
+                    db.execute(SET_DAYS, (kick_days + 1, s.id, 0,))
+                    db.execute(SET_DAYS, (ban_days + 1, s.id, 1,))
+        time.sleep(3600)
+
+
 @client.event
 async def on_ready():
     init_db()
@@ -135,6 +151,10 @@ async def on_ready():
         if not in_db(s):
             add_to_db(s)
     print('ready')
+
+# start day incrementor
+t = threading.Thread(target=increment_days, daemon=True)
+t.start()
 
 # start client
 print('starting client...')

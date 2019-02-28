@@ -82,7 +82,8 @@ async def on_message(message):
             await report_days(server, channel, category='ban')
         else:
             await report_days(server, channel)
-    elif message.content.startswith('+k'):
+    elif message.content.startswith('+k') and message.author:
+        # TODO: detect admin
         # we just kicked someone, reset value
         await reset_days(message.server, category='kick')
         await report_days(server, channel, category='kick')
@@ -158,4 +159,8 @@ t.start()
 
 # start client
 print('starting client...')
-client.run(cfg_parser.get('DISCORD', "TOKEN"))
+while True:
+    try:
+        client.run(cfg_parser.get('DISCORD', "TOKEN"))
+    except ConnectionResetError:
+        pass

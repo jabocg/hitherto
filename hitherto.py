@@ -82,8 +82,8 @@ async def on_message(message):
             await report_days(server, channel, category='ban')
         else:
             await report_days(server, channel)
-    elif message.content.startswith('+k') and message.author:
-        # TODO: detect admin
+    elif (message.content.startswith('+k')
+          and message.author.permissions_in(channel).kick_members):
         # we just kicked someone, reset value
         await reset_days(message.server, category='kick')
         await report_days(server, channel, category='kick')

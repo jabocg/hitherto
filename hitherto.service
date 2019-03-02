@@ -1,8 +1,8 @@
 [Unit]
 Description=Hitherto Discord bot
 [Service]
-User=
+User=hitherto_user
 RootDirectory=/path/to/hitherto
-ExecStart=./env/bin/python ./hitherto.py -i ./id.cfg
+ExecStart=/path/to/hitherto/env/bin/python hitherto.py -i id.cfg
 Restart=on-failure
 RestartSec=3

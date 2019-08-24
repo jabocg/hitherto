@@ -76,9 +76,9 @@ async def on_message(message):
     if client.user.mentioned_in(message):
         words = message.content.split(' ')
         if 'status' in words:
-            await channel.send_message("I'm Here!")
+            await channel.send("I'm Here!")
         elif 'hi' in words or 'hello' in words:
-            await channel.send_message(random.choice(GREETING_STRINGS))
+            await channel.send(random.choice(GREETING_STRINGS))
         elif 'kick' in words:
             await report_days(server, channel, category='kick')
         elif 'ban' in words:
@@ -114,7 +114,7 @@ async def report_days(server, channel, category='all'):
 
     msg = ('It has been {days} day(s) since the last {category}.'
            .format(days=days, category=category))
-    await channel.send_message(msg)
+    await channel.send(msg)
 
 
 def init_db():

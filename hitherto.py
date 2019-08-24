@@ -140,7 +140,7 @@ def increment_days():
         now = datetime.datetime.utcnow()
         if now.hour == 0:
             with get_db() as db:
-                for s in client.servers:
+                for s in client.guilds:
                     kick_days = db.execute(GET_DAYS, (s.id, 0,)).fetchone()[0]
                     ban_days = db.execute(GET_DAYS, (s.id, 1,)).fetchone()[0]
                     db.execute(SET_DAYS, (kick_days + 1, s.id, 0,))
@@ -151,7 +151,7 @@ def increment_days():
 @client.event
 async def on_ready():
     init_db()
-    for s in client.servers:
+    for s in client.guilds:
         if not in_db(s):
             add_to_db(s)
     print('ready')

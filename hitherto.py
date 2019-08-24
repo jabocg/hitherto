@@ -74,13 +74,14 @@ async def on_message(message):
     if not in_db(server):
         add_to_db(server)
     if client.user.mentioned_in(message):
-        if 'status' in message.content:
+        words = message.content.split(' ')
+        if 'status' in words:
             await client.send_message(channel, "I'm Here!")
-        elif 'hi' in message.content or 'hello' in message.content:
+        elif 'hi' in words or 'hello' in words:
             await client.send_message(channel, random.choice(GREETING_STRINGS))
-        elif 'kick' in message.content:
+        elif 'kick' in words:
             await report_days(server, channel, category='kick')
-        elif 'ban' in message.content:
+        elif 'ban' in words:
             await report_days(server, channel, category='ban')
         else:
             await report_days(server, channel)

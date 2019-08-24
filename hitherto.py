@@ -71,6 +71,8 @@ async def on_message(message):
     """Either check for kick or respond to a ping."""
     channel = message.channel
     server = channel.server
+    if not in_db(server):
+        add_to_db(server)
     if client.user.mentioned_in(message):
         if 'status' in message.content:
             await client.send_message(channel, "I'm Here!")

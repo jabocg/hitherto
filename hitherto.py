@@ -70,7 +70,7 @@ async def on_member_ban(member):
 async def on_message(message):
     """Either check for kick or respond to a ping."""
     channel = message.channel
-    server = channel.server
+    server = channel.guild
     if not in_db(server):
         add_to_db(server)
     if client.user.mentioned_in(message):
@@ -88,7 +88,7 @@ async def on_message(message):
     elif (message.content.startswith('+k')
           and message.author.permissions_in(channel).kick_members):
         # we just kicked someone, reset value
-        await reset_days(message.server, category='kick')
+        await reset_days(message.guild, category='kick')
         await report_days(server, channel, category='kick')
 
 
